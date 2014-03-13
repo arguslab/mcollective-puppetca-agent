@@ -25,6 +25,13 @@ module MCollective
         reply[:requests], reply[:signed] = @puppetca.certificates
       end
 
+      action 'generate' do
+        reply[:out],
+        reply[:client_cert],
+        reply[:client_key],
+        reply[:ca_cert] = @puppetca.generate(request[:certname])
+      end
+
       action 'status' do
         status =  @puppetca.status(request[:certname])
         case status

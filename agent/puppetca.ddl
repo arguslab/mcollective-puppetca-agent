@@ -81,3 +81,31 @@ action "status", :description => "Find a certificate's status" do
            :description => "Human readable status message",
            :display_as  => "Result"
 end
+
+action "generate", :description => "Generate and sign a new certificate" do
+    display :always
+
+    input :certname,
+          :prompt      => "Certificate Name",
+          :description => "Host name to use when generating the certificate",
+          :type        => :string,
+          :validation  => :shellsafe,
+          :optional    => false,
+          :maxlength   => 100
+
+    output :out,
+           :description => "Output of the command",
+           :display_as =>  "Output"
+
+    output :client_cert,
+           :description => "Client certificate in PEM format",
+           :display_as =>  "Client Certificate"
+
+    output :client_key,
+           :description => "Client private key in PEM format",
+           :display_as =>  "Client Private Key"
+
+    output :ca_cert,
+           :description => "CA certificate in PEM format",
+           :display_as =>  "CA Certificate"
+end

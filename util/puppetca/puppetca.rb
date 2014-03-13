@@ -7,6 +7,7 @@ module MCollective
       def initialize
         config = Config.instance
         @puppetca = config.pluginconf.fetch('puppetca.puppetca', '/usr/bin/puppet cert')
+        @sslpath = config.pluginconf.fetch('puppetca.sslpath', '/var/lib/puppet/ssl')
       end
 
       # Clean the cert
@@ -52,6 +53,18 @@ module MCollective
         else
           return 2
         end
+      end
+
+      # Generates and signs a new certificate for the given host
+      def generate(certname)
+        output = ''
+        Shell.new('%s generate %s' % [@puppetca, certname], :stdout => output).runcommand
+
+        client_cert = File.read(File.join(@sslpath, "certs", "#{certname}.pem"))
+        client_key  = File.read(File.join(@sslpath, "private_keys", "#{certname}.pem"))
+        ca_cert     = File.read(File.join(@sslpath, "certs", "ca.pem"))
+
+        [output, client_cert, client_key, ca_cert]
       end
 
       # Returns the list of both signed certificates and waiting to
